@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucifer Json Extractor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #121212; /* Latar belakang gelap */
+            color: #E0E0E0; /* Warna teks terang */
+        }
+        h1 {
+            color: #4CAF50; /* Warna hijau untuk judul */
+        }
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 10px;
+            border: 1px solid #444; /* Border lebih gelap */
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            background-color: #1E1E1E; /* Latar belakang area teks gelap */
+            color: #E0E0E0; /* Warna teks area teks terang */
+            resize: vertical;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #4CAF50; /* Warna hijau untuk tombol */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049; /* Warna hijau lebih gelap saat hover */
+        }
+        .result {
+            margin-top: 20px;
+            border: 1px solid #444; /* Border lebih gelap */
+            padding: 10px;
+            background-color: #1E1E1E; /* Latar belakang hasil gelap */
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column; /* Mengatur hasil ke bawah */
+            max-width: 100%; /* Lebar maksimum */
+        }
+        .result-item {
+            white-space: normal; /* Mengizinkan teks membungkus */
+            margin-bottom: 5px; /* Jarak antar hasil */
+        }
+        .result strong {
+            color: #4CAF50; /* Warna hijau untuk teks hasil */
+        }
+    </style>
+</head>
+<body>
+
+<h1>Extractor Lucifer</h1>
+<p>Masukkan Advanced Json di bawah ini:</p>
+<textarea id="jsonInput"></textarea>
+<button onclick="extractValues()">Ambil MAC|RID|WK|TOKEN</button>
+<button onclick="copyToClipboard()">Copy</button>
+
+<div class="result" id="result"></div>
+
+<script>
+    function extractValues() {
+        const jsonInput = document.getElementById('jsonInput').value;
+        let resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = ''; // Clear previous results
+
+        try {
+            const jsonData = JSON.parse(jsonInput);
+
+            // Ambil nilai yang diinginkan
+            const bots = jsonData.bots;
+
+            // Looping untuk setiap bot
+            for (let i = 0; i < bots.length; i++) {
+                const bot = bots[i];
+                const mac = bot.credentials.mac;
+                const rid = bot.credentials.rid;
+                const wk = bot.credentials.wk;
+                const ltoken = bot.credentials.ltoken;
+
+                // Format hasil
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.innerHTML = `${mac}|${rid}|${wk}|${ltoken}`;
+                resultDiv.appendChild(resultItem);
+            }
+        } catch (error) {
+            resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+        }
+    }
+
+    function copyToClipboard() {
+        const resultDiv = document.getElementById('result');
+        const textToCopy = resultDiv.innerText; // Ambil teks dari hasil
+
+        if (textToCopy) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert('Hasil telah disalin ke clipboard!');
+            }).catch(err => {
+                alert('Gagal menyalin: ', err);
+            });
+        } else {
+            alert('Tidak ada hasil untuk disalin.');
+        }
+    }
+</script>
+
+</body>
+</html>
